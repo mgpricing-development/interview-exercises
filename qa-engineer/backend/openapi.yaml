@@ -103,8 +103,11 @@ components:
       additionalProperties: false
       required:
         - name
+        - _id
       properties:
         name:
+          type: string
+        _id:
           type: string
     Tasks:
       type: array
