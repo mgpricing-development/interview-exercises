@@ -23,16 +23,16 @@ jobs:
           node-version: 14
 
       - run: npm install
-        working-directory: frontend
+        working-directory: qa-engineer/frontend
 
       - run: npm run build
-        working-directory: frontend
+        working-directory: qa-engineer/frontend
         env:
           CI: false
 
       - name: Record SHA into text file
         run: echo "${{ steps.vars.outputs.short_sha }}" > build/sha.txt
-        working-directory: frontend
+        working-directory: qa-engineer/frontend
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -42,7 +42,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Copy tarball to S3 codesets bucket
-        run: aws s3 cp frontend/build s3://qa-example-website/
+        run: aws s3 cp qa-engineer/frontend/build s3://qa-example-website/
 
       - name: Invalidate Cloudfront distribution
         run: aws cloudfront create-invalidation --distribution-id E3GQ9JCM6SCDS4 --paths '/*'
@@ -88,7 +88,7 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
-        working-directory: backend
+        working-directory: qa-engineer/backend
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ matrix.ecrRepositoryName }}
@@ -103,25 +103,25 @@ jobs:
 
       - name: Find and replace environment name in Task Definition file
         run: sed -i 's/ENVIRONMENT_NAME/${{ matrix.environmentName }}/g' ${{ matrix.taskDefinitionFile }}
-        working-directory: backend
+        working-directory: qa-engineer/backend
 
       - name: Find and replace commit ref in Task Definition file
         run: sed -i 's/COMMIT_REF/${{ steps.vars.outputs.short_sha }}/g' ${{ matrix.taskDefinitionFile }}
-        working-directory: backend
+        working-directory: qa-engineer/backend
 
       - name: Find and replace container name in Task Definition file
         run: sed -i 's/CONTAINER_NAME/${{ matrix.containerName }}/g' ${{ matrix.taskDefinitionFile }}
-        working-directory: backend
+        working-directory: qa-engineer/backend
 
       - name: Find and replace AWS account id in Task Definition file
         run: sed -i 's/AWS_ACCOUNT_ID/${{ matrix.awsAccountId }}/g' ${{ matrix.taskDefinitionFile }}
-        working-directory: backend
+        working-directory: qa-engineer/backend
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: backend/${{ matrix.taskDefinitionFile }}
+          task-definition: qa-engineer/backend/${{ matrix.taskDefinitionFile }}
           container-name: ${{ matrix.containerName }}
           image: ${{ matrix.awsAccountId }}.dkr.ecr.eu-west-1.amazonaws.com/${{ matrix.ecrRepositoryName }}:${{ steps.vars.outputs.short_sha }}
 
