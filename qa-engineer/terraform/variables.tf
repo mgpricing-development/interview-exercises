@@ -1,10 +1,6 @@
-variable "environment_name" {
-  type = string
-  default = "example"
-}
-
 variable "region" {
   type = string
+  default = "eu-west-1"
 }
 
 variable "cidr_block" {
@@ -53,19 +49,8 @@ variable "docker_port_number" {
   default = 3000
 }
 
-variable "elastic_container_registry_url" {
-  type = string
-  default = ""
-}
-
-variable "requires_artifact_bucket" {
-  type = bool
-  default = false
-}
-
 variable "vpc_id" {
   type = string
-  default = ""
 }
 
 variable "public_subnet_ids" {

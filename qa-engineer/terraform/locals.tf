@@ -14,6 +14,6 @@ locals {
   ]
 
   common_tags = {
-    Environment = var.environment_name
+    Environment = "qa-example"
   }
 }
