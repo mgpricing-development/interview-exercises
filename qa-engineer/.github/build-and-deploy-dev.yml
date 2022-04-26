@@ -1,0 +1,320 @@
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - "backend/**"
+      - "serverless/**"
+
+name: Build and Deploy to DEV
+concurrency: dev
+
+jobs:
+  buildFrontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Short SHA
+        id: vars
+        run: echo "::set-output name=short_sha::$(git rev-parse --short HEAD)"
+
+      - name: Use Node 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - run: npm install
+        working-directory: frontend
+
+      - run: npm run build
+        working-directory: frontend
+        env:
+          CI: false
+
+      - name: Record SHA into text file
+        run: echo "${{ steps.vars.outputs.short_sha }}" > build/sha.txt
+        working-directory: frontend
+
+      - name: Package code into tarball
+        run: tar cvzf ${{ steps.vars.outputs.short_sha }}.tgz frontend/build db backend/unified-task-definition.json
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Copy tarball to S3 codesets bucket
+        run: aws s3 cp ${{ steps.vars.outputs.short_sha }}.tgz s3://dev-cuvama-codesets/
+
+  buildBackend:
+    name: Build Backend
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        container: [api, worker, migration]
+        include:
+          - container: api
+            ecrRepositoryName: dev-discover-api
+            dockerFile: Dockerfile
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Short SHA
+        id: vars
+        run: echo "::set-output name=short_sha::$(git rev-parse --short HEAD)"
+
+      - name: Use Node 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        working-directory: backend
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ matrix.ecrRepositoryName }}
+          IMAGE_TAG: ${{ steps.vars.outputs.short_sha }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ${{ matrix.dockerFile }} .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+  deployFrontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+    needs:
+      - migrateDatabase
+    strategy:
+      matrix:
+        include:
+          - environmentName: dev
+            cloudfrontDistributionId: E3SCPKBMM3XOB7
+
+    steps:
+      - name: Set Short SHA
+        id: vars
+        run: echo "::set-output name=short_sha::$(echo ${GITHUB_SHA:0:7})"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Download Code Artifact
+        run: aws s3 cp s3://dev-cuvama-codesets/${{ steps.vars.outputs.short_sha }}.tgz ./
+
+      - name: Expand Code
+        run: tar xvzf ${{ steps.vars.outputs.short_sha }}.tgz
+
+      - name: Copy frontend code to S3 website bucket
+        run: aws s3 sync build/ s3://${{ matrix.environmentName }}-cuvama-website/
+        working-directory: frontend
+
+      - name: Invalidate Cloudfront distribution
+        run: aws cloudfront create-invalidation --distribution-id ${{ matrix.cloudfrontDistributionId }} --paths '/*'
+
+  deployBackend:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+    needs:
+      - migrateDatabase
+    strategy:
+      matrix:
+        container: [api, worker]
+        include:
+          - container: api
+            environmentName: dev
+            ecrRepositoryName: dev-discover-api
+            containerName: discover-api
+            taskDefinitionFile: unified-task-definition.json
+            awsAccountId: "077551424359"
+          - container: worker
+            environmentName: dev
+            ecrRepositoryName: dev-discover-worker
+            containerName: discover-worker
+            taskDefinitionFile: unified-task-definition.json
+            awsAccountId: "077551424359"
+
+    steps:
+      - name: Set Short SHA
+        id: vars
+        run: echo "::set-output name=short_sha::$(echo ${GITHUB_SHA:0:7})"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Download Code Artifact
+        run: aws s3 cp s3://dev-cuvama-codesets/${{ steps.vars.outputs.short_sha }}.tgz ./
+
+      - name: Expand Code
+        run: tar xvzf ${{ steps.vars.outputs.short_sha }}.tgz
+
+      - name: Find and replace environment name in Task Definition file
+        run: sed -i 's/ENVIRONMENT_NAME/${{ matrix.environmentName }}/g' ${{ matrix.taskDefinitionFile }}
+        working-directory: backend
+
+      - name: Find and replace commit ref in Task Definition file
+        run: sed -i 's/COMMIT_REF/${{ steps.vars.outputs.short_sha }}/g' ${{ matrix.taskDefinitionFile }}
+        working-directory: backend
+
+      - name: Find and replace container name in Task Definition file
+        run: sed -i 's/CONTAINER_NAME/${{ matrix.containerName }}/g' ${{ matrix.taskDefinitionFile }}
+        working-directory: backend
+
+      - name: Find and replace AWS account id in Task Definition file
+        run: sed -i 's/AWS_ACCOUNT_ID/${{ matrix.awsAccountId }}/g' ${{ matrix.taskDefinitionFile }}
+        working-directory: backend
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: backend/${{ matrix.taskDefinitionFile }}
+          container-name: ${{ matrix.containerName }}
+          image: ${{ matrix.awsAccountId }}.dkr.ecr.eu-west-1.amazonaws.com/${{ matrix.ecrRepositoryName }}:${{ steps.vars.outputs.short_sha }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ matrix.ecrRepositoryName }}
+          cluster: ${{ matrix.environmentName }}-discover
+          wait-for-service-stability: true
+
+  deployLambda:
+    name: Deploy Lambda
+    runs-on: ubuntu-latest
+    needs:
+      - migrateDatabase
+
+    strategy:
+      matrix:
+        function:
+          - flexibleDomainCheck
+          - migrateUser
+          - updateLastLogin
+          - emailNotificationsCron
+          - dailyCron
+        include:
+          - function: flexibleDomainCheck
+            functionName: dev-flexibleDomainCheck
+            package: cognito.zip
+            bucketName: dev-cuvama-codesets
+          - function: migrateUser
+            functionName: dev-migrateUser
+            package: cognito.zip
+            bucketName: dev-cuvama-codesets
+          - function: updateLastLogin
+            functionName: dev-updateLastLogin
+            package: cognito.zip
+            bucketName: dev-cuvama-codesets
+          - function: emailNotificationsCron
+            functionName: dev-emailNotificationsCron
+            package: cognito.zip
+            bucketName: dev-cuvama-codesets
+          - function: dailyCron
+            functionName: dev-dailyCron
+            package: cognito.zip
+            bucketName: dev-cuvama-codesets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Short SHA
+        id: vars
+        run: echo "::set-output name=short_sha::$(git rev-parse --short HEAD)"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Deploy Lambda
+        run: aws lambda update-function-code --s3-bucket ${{ matrix.bucketName }} --s3-key ${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} --function-name ${{ matrix.functionName }}
+
+  ms-teams:
+    name: Send Teams Notification
+    needs:
+      - deployFrontend
+      - deployBackend
+      - deployLambda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: toko-bifrost/ms-teams-deploy-card@master
+        if: always()
+        with:
+          github-token: ${{ github.token }}
+          webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
+          show-on-start: false
+          card-layout-exit: complete
+          include-files: false
+          timezone: "Europe/London"
+          enable-view-status: false
+          enable-review-diffs: false
+          environment: dev.cuvama.com
+
+  cypress-run:
+    name: Cypress Run Tests
+    needs:
+      - deployFrontend
+      - deployBackend
+      - deployLambda
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: frontend
+          record: true
+          spec: cypress/integration/pages/*-spec.js
+        env:
+          CYPRESS_BASE_URL: ${{ secrets.CYPRESS_BASE_URL }}
+          CYPRESS_email: ${{ secrets.TEST_EMAIL }}
+          CYPRESS_password: ${{ secrets.TEST_PASSWORD }}
+          CYPRESS_adminEmail: ${{ secrets.TEST_ADMIN_EMAIL }}
+          CYPRESS_adminPassword: ${{ secrets.TEST_ADMIN_PASSWORD }}
+          CYPRESS_externalEmail: ${{ secrets.TEST_EXTERNAL_EMAIL }}
+          CYPRESS_externalPassword: ${{ secrets.TEST_EXTERNAL_PASSWORD }}
+          CYPRESS_apiBaseUrl: https://api.dev.cuvama.com
+          CYPRESS_tenantId: dev
+          CYPRESS_cognitoBaseUrl: ${{ secrets.COGNITO_BASE_URL }}
+          CYPRESS_userPoolWebClientId: ${{ secrets.USER_POOL_WEB_CLIENT_ID }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          CYPRESS_PROJECT_ID: sbcid4

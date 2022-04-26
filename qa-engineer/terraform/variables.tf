@@ -1,0 +1,86 @@
+variable "environment_name" {
+  type = string
+  default = "example"
+}
+
+variable "region" {
+  type = string
+}
+
+variable "cidr_block" {
+  type = string
+  default = ""
+}
+
+variable "public_subnet_cidr_blocks" {
+  type = list(string)
+  default = []
+}
+
+variable "private_subnet_cidr_blocks" {
+  type = list(string)
+  default = []
+}
+
+variable "availability_zones" {
+  type = list(string)
+  default = []
+}
+
+variable "cloudfront_certificate_arn" {
+  type = string
+}
+
+variable "api_certificate_arn" {
+  type = string
+}
+
+variable "host_zone_id" {
+  type = string
+}
+
+variable "lambda_at_edge_arn" {
+  type = string
+}
+
+variable "disable_basic_auth" {
+  type = bool
+  default = false
+}
+
+variable "docker_port_number" {
+  type = number
+  default = 3000
+}
+
+variable "elastic_container_registry_url" {
+  type = string
+  default = ""
+}
+
+variable "requires_artifact_bucket" {
+  type = bool
+  default = false
+}
+
+variable "vpc_id" {
+  type = string
+  default = ""
+}
+
+variable "public_subnet_ids" {
+  type = list(string)
+  default = []
+}
+
+variable "private_subnet_ids" {
+  type = list(string)
+  default = []
+}
+
+variable "desired_count" {
+  type = number
+  default = 0
+}
+
+data "aws_caller_identity" "current" {}
