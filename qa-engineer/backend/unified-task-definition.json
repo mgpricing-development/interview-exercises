@@ -1,0 +1,73 @@
+{
+  "family": "qa-example",
+  "cpu": "2048",
+  "memory": "4096",
+  "requiresCompatibilities": ["FARGATE"],
+  "executionRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/qa-example-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/qa-example-task-role",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "CONTAINER_NAME",
+      "essential": true,
+      "image": "",
+      "portMappings": [
+        {
+          "containerPort": 3000
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "qa-example-log-group",
+          "awslogs-region": "eu-west-1",
+          "awslogs-stream-prefix": "qa-example"
+        }
+      },
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "3000"
+        },
+        {
+          "name": "AWS_REGION",
+          "value": "eu-west-1"
+        },
+        {
+          "name": "CONFIG_AUTH_SAME_SITE",
+          "value": "strict"
+        },
+        {
+          "name": "CONFIG_AUTH_SECURE",
+          "value": "true"
+        },
+        {
+          "name": "IS_AWS",
+          "value": "true"
+        },
+        {
+          "name": "LOG_JSON",
+          "value": "true"
+        },
+        {
+          "name": "VERSION",
+          "value": "COMMIT_REF"
+        },
+        {
+          "name": "APP_NAME",
+          "value": "CONTAINER_NAME"
+        },
+        {
+          "name": "CLUSTER_MODE",
+          "value": "true"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "MONGODB_URL",
+          "valueFrom": "arn:aws:ssm:eu-west-1:AWS_ACCOUNT_ID:parameter/dev/todo/mongodbUrl"
+        }
+      ]
+    }
+  ]
+}
