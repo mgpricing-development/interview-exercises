@@ -1,9 +1,6 @@
 on:
   push:
     branches: [main]
-    paths:
-      - "qa-engineer/frontend/**"
-      - "qa-engineer/backend/**"
 
 name: Build and Deploy QA Example
 
