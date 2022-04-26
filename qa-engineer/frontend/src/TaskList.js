@@ -5,6 +5,7 @@ import Task from "./Task";
 import { useEffect } from "react";
 import { getTasks } from "./store/actions/tasks";
 import styled from "styled-components";
+import TaskForm from "./TaskForm";
 
 const TaskList = ({ getTasks, tasks }) => {
   useEffect(() => {
@@ -13,7 +14,8 @@ const TaskList = ({ getTasks, tasks }) => {
 
   return (
     <Container>
-      <h1>Task List</h1>
+      <h1>Task List ({tasks.length} items)</h1>
+      <TaskForm />
       {tasks.map((task, index) => (
         <Task task={task} key={index} />
       ))}
@@ -23,7 +25,8 @@ const TaskList = ({ getTasks, tasks }) => {
 
 const Container = styled.div`
   padding: 20px;
-  max-width: 400px;
+  margin: auto;
+  width: 50%;
 `;
 
 const mapStateToProps = (state) => ({

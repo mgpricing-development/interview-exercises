@@ -2,10 +2,10 @@ import styled from "styled-components";
 import { bindActionCreators, compose } from "redux";
 import { deleteTask } from "./store/actions/tasks";
 import { connect } from "react-redux";
+import { Button } from "antd";
 
 const Task = ({ task, deleteTask }) => {
   const onDelete = () => {
-    console.log("task", task);
     deleteTask({ taskId: task._id });
   };
 
@@ -13,7 +13,7 @@ const Task = ({ task, deleteTask }) => {
     <Container>
       <Name>{task.name}</Name>
       <Action>
-        <button onClick={onDelete}>Delete</button>
+        <Button onClick={onDelete}>Delete</Button>
       </Action>
     </Container>
   );
@@ -30,6 +30,7 @@ const Container = styled.div`
 
 const Name = styled.div`
   flex: 1;
+  text-align: left;
 `;
 
 const Action = styled.div``;

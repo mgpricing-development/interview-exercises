@@ -83,8 +83,6 @@ components:
     CreateTask:
       type: object
       additionalProperties: false
-      required:
-        - name
       properties:
         name:
           type: string
@@ -102,7 +100,6 @@ components:
       type: object
       additionalProperties: false
       required:
-        - name
         - _id
       properties:
         name:
