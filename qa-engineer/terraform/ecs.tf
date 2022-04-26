@@ -202,7 +202,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   container_definitions = <<TASK_DEFINITIONS
 [
   {
-    "name": "discover-api",
+    "name": "qa-example",
     "essential": true,
     "image": "nginx",
     "portMappings": [ { "ContainerPort": ${var.docker_port_number} } ],
