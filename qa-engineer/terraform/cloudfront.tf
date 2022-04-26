@@ -93,3 +93,11 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   tags = local.common_tags
 }
+
+resource "aws_route53_record" "cloudfront_route_53_cname" {
+  zone_id = var.host_zone_id
+  name = local.website_host_name
+  type = "CNAME"
+  ttl = "300"
+  records = [aws_cloudfront_distribution.distribution.domain_name]
+}
