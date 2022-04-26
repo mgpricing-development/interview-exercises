@@ -14,7 +14,7 @@ const TaskList = ({ getTasks, tasks }) => {
 
   return (
     <Container>
-      <h1>Task List ({tasks.length} items)</h1>
+      <h1 data-cy={"task-list-header"}>Task List ({tasks.length} items)</h1>
       <TaskForm />
       {tasks.map((task, index) => (
         <Task task={task} key={index} />

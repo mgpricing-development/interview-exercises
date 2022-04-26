@@ -10,8 +10,8 @@ const Task = ({ task, deleteTask }) => {
   };
 
   return (
-    <Container>
-      <Name>{task.name}</Name>
+    <Container data-cy={"task"}>
+      <Name data-cy={"task-name"}>{task.name}</Name>
       <Action>
         <Button onClick={onDelete}>Delete</Button>
       </Action>
