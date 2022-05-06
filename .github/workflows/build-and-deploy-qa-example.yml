@@ -1,9 +1,14 @@
 on:
   push:
-    branches: [main]
+    branches: [main, VDT-2327-1]
+    paths:
+      - "qa-engineer/frontend/**"
+      - "qa-engineer/backend/**"
+      - "qa-engineer/serverless/**"
+      - ".github/**"
 
-name: Build and Deploy QA Example
-
+name: Build and Deploy Interview Exercise
+concurrency: interview-example
 jobs:
   frontend:
     name: Build and Deploy Frontend
@@ -42,10 +47,10 @@ jobs:
           aws-region: eu-west-1
 
       - name: Copy files to S3 codesets bucket
-        run: aws s3 sync qa-engineer/frontend/build s3://qa-example-website/
+        run: aws s3 sync qa-engineer/frontend/build s3://interview-exercise-website/
 
       - name: Invalidate Cloudfront distribution
-        run: aws cloudfront create-invalidation --distribution-id E3GQ9JCM6SCDS4 --paths '/*'
+        run: aws cloudfront create-invalidation --distribution-id EGN87YZETV09N --paths '/*'
 
   backend:
     name: Build and Deploy Backend
@@ -56,9 +61,9 @@ jobs:
         container: [api]
         include:
           - container: api
-            ecrRepositoryName: qa-example
+            ecrRepositoryName: interview-exercise
             dockerFile: Dockerfile
-            containerName: qa-example
+            containerName: interview-exercise
             taskDefinitionFile: unified-task-definition.json
             awsAccountId: "077551424359"
 
@@ -130,5 +135,49 @@ jobs:
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ matrix.ecrRepositoryName }}
-          cluster: qa-example
+          cluster: interview-exercise
           wait-for-service-stability: true
+
+  lambda:
+    name: Build and Deploy Lambda
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        function:
+          - lambdaAtEdge
+        include:
+          - function: lambdaAtEdge
+            functionName: interview-exercise-lambdaAtEdge
+            package: lambdaAtEdge.zip
+            bucketName: interview-exercise-cuvama-lambda
+            directory: qa-engineer/serverless/lambda-at-edge
+
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Short SHA
+        id: vars
+        run: echo "::set-output name=short_sha::$(git rev-parse --short HEAD)"
+
+      - name: Use Node 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - run: zip -r ${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} .
+        working-directory: ${{ matrix.directory }}
+
+      - name: Deploy Lambda
+        run: aws lambda update-function-code --zip-file fileb://${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} --function-name ${{ matrix.functionName }}
+        working-directory: ${{ matrix.directory }}
+

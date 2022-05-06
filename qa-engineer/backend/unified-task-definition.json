@@ -1,10 +1,10 @@
 {
-  "family": "qa-example",
+  "family": "interview-exercise",
   "cpu": "2048",
   "memory": "4096",
   "requiresCompatibilities": ["FARGATE"],
-  "executionRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/qa-example-ecs-execution-role",
-  "taskRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/qa-example-task-role",
+  "executionRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/interview-exercise-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/interview-exercise-task-role",
   "networkMode": "awsvpc",
   "containerDefinitions": [
     {
@@ -19,9 +19,9 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "qa-example-log-group",
+          "awslogs-group": "interview-exercise-log-group",
           "awslogs-region": "eu-west-1",
-          "awslogs-stream-prefix": "qa-example"
+          "awslogs-stream-prefix": "interview-exercise"
         }
       },
       "environment": [
@@ -65,7 +65,15 @@
       "secrets": [
         {
           "name": "MONGODB_URL",
-          "valueFrom": "arn:aws:ssm:eu-west-1:AWS_ACCOUNT_ID:parameter/dev/todo/mongodbUrl"
+          "valueFrom": "arn:aws:ssm:eu-west-1:AWS_ACCOUNT_ID:parameter/interviewExercise/mongodbUrl"
+        },
+        {
+          "name": "BASIC_AUTH_USERNAME",
+          "valueFrom": "arn:aws:ssm:us-east-1:AWS_ACCOUNT_ID:parameter/interviewExercise/basicAuthUsername"
+        },
+        {
+          "name": "BASIC_AUTH_PASSWORD",
+          "valueFrom": "arn:aws:ssm:us-east-1:AWS_ACCOUNT_ID:parameter/interviewExercise/basicAuthPassword"
         }
       ]
     }

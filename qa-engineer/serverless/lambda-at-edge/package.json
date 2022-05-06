@@ -1,0 +1,11 @@
+{
+	"name": "transferwise-monthly",
+	"description": "JaburoTV: Layers",
+	"version": "0.0.1",
+	"private": true,
+	"dependencies": {
+		"aws-sdk": "^2.668.0"
+	},
+	"devDependencies": {},
+	"scripts": {}
+}

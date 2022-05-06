@@ -1,26 +1,11 @@
 variable "region" {
-  type = string
+  type    = string
   default = "eu-west-1"
 }
 
 variable "cidr_block" {
-  type = string
+  type    = string
   default = ""
-}
-
-variable "public_subnet_cidr_blocks" {
-  type = list(string)
-  default = []
-}
-
-variable "private_subnet_cidr_blocks" {
-  type = list(string)
-  default = []
-}
-
-variable "availability_zones" {
-  type = list(string)
-  default = []
 }
 
 variable "cloudfront_certificate_arn" {
@@ -36,16 +21,12 @@ variable "host_zone_id" {
 }
 
 variable "lambda_at_edge_arn" {
-  type = string
-}
-
-variable "disable_basic_auth" {
-  type = bool
-  default = false
+  type    = string
+  default = ""
 }
 
 variable "docker_port_number" {
-  type = number
+  type    = number
   default = 3000
 }
 
@@ -54,17 +35,17 @@ variable "vpc_id" {
 }
 
 variable "public_subnet_ids" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 variable "private_subnet_ids" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 variable "desired_count" {
-  type = number
+  type    = number
   default = 0
 }
 
