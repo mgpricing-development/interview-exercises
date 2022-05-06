@@ -10,7 +10,7 @@ async function getConfiguration() {
 
         do {
             const results = await ssm.getParametersByPath({
-                Path: `/interview-example/`,
+                Path: `/interviewExercise/`,
                 Recursive: true,
                 MaxResults: 10,
                 NextToken: nextToken,
