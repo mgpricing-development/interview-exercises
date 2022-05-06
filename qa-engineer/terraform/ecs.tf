@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "cloudwatch_log_group" {
-  name = "qa-example-log-group"
+  name = "interview-exercise-log-group"
   retention_in_days = 30
 
   tags = local.common_tags
@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "ecs-tasks-assume-role-policy" {
 }
 
 resource "aws_iam_policy" "execution-policy" {
-  name = "qa-example-ecs-execution-policy"
+  name = "interview-exercise-ecs-execution-policy"
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -41,7 +41,7 @@ EOF
 }
 
 resource "aws_iam_role" "execution_role" {
-  name = "qa-example-ecs-execution-role"
+  name = "interview-exercise-ecs-execution-role"
   assume_role_policy = data.aws_iam_policy_document.ecs-tasks-assume-role-policy.json
 }
 
@@ -51,7 +51,7 @@ resource "aws_iam_role_policy_attachment" "execution_role_attachment" {
 }
 
 resource "aws_iam_policy" "task_policy" {
-  name = "qa-example-task-policy"
+  name = "interview-exercise-task-policy"
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -71,7 +71,7 @@ EOF
 }
 
 resource "aws_iam_role" "task_role" {
-  name = "qa-example-task-role"
+  name = "interview-exercise-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs-tasks-assume-role-policy.json
 }
 
@@ -81,12 +81,12 @@ resource "aws_iam_role_policy_attachment" "qa_example_task_role_attachment" {
 }
 
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "qa-example"
+  name = "interview-exercise"
   tags = local.common_tags
 }
 
 resource "aws_security_group" "load_balancer_security_group" {
-  name = "qa-example-load-balancer-sg"
+  name = "interview-exercise-load-balancer-sg"
   description = "Security Group for QA Example Load Balancer"
   vpc_id = local.vpc_id
 
@@ -117,7 +117,7 @@ resource "aws_security_group" "load_balancer_security_group" {
 }
 
 resource "aws_security_group" "container_security_group" {
-  name = "qa-example-container-sg"
+  name = "interview-exercise-container-sg"
   description = "Security Group for QA Example Container"
   vpc_id = local.vpc_id
 
@@ -140,7 +140,7 @@ resource "aws_security_group" "container_security_group" {
 }
 
 resource "aws_lb" "load_balancer" {
-  name = "qa-example-lb"
+  name = "interview-exercise-lb"
   internal = false
   load_balancer_type = "application"
   security_groups = [aws_security_group.load_balancer_security_group.id]
@@ -163,7 +163,7 @@ resource "aws_lb_listener" "load_balancer_http_listener" {
 }
 
 resource "aws_lb_target_group" "target_group" {
-  name = "qa-example-tg"
+  name = "interview-exercise-tg"
   vpc_id = local.vpc_id
   port = var.docker_port_number
   protocol = "HTTP"
@@ -193,7 +193,7 @@ resource "aws_lb_listener" "load_balancer_https_listener" {
 }
 
 resource "aws_ecs_task_definition" "task_definition" {
-  family = "qa-example"
+  family = "interview-exercise"
   cpu = 2048
   memory = "4096"
   network_mode = "awsvpc"
@@ -202,7 +202,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   container_definitions = <<TASK_DEFINITIONS
 [
   {
-    "name": "qa-example",
+    "name": "interview-exercise",
     "essential": true,
     "image": "nginx",
     "portMappings": [ { "ContainerPort": ${var.docker_port_number} } ],
@@ -211,7 +211,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       "options": {
         "awslogs-group": "${aws_cloudwatch_log_group.cloudwatch_log_group.name}",
         "awslogs-region": "${var.region}",
-        "awslogs-stream-prefix": "qa-example"
+        "awslogs-stream-prefix": "interview-exercise"
       }
     }
   }
@@ -222,7 +222,7 @@ TASK_DEFINITIONS
 }
 
 resource "aws_ecs_service" "ecs_service" {
-  name = "qa-example"
+  name = "interview-exercise"
   depends_on = [aws_lb.load_balancer, aws_lb_listener.load_balancer_https_listener]
   cluster = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.task_definition.arn
@@ -234,7 +234,7 @@ resource "aws_ecs_service" "ecs_service" {
   health_check_grace_period_seconds = 60
 
   load_balancer {
-    container_name = "qa-example"
+    container_name = "interview-exercise"
     container_port = var.docker_port_number
     target_group_arn = aws_lb_target_group.target_group.arn
   }
