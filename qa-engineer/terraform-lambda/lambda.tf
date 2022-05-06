@@ -81,6 +81,6 @@ resource "aws_lambda_function" "lambda_functions" {
   role          = aws_iam_role.iam_for_lambda.arn
   runtime       = "nodejs14.x"
   timeout       = 5
-  memory_size   = 1024
+  memory_size   = 128
   handler       = "handler.handler"
 }
