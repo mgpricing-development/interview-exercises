@@ -6,7 +6,7 @@ on:
       - "qa-engineer/backend/**"
       - "qa-engineer/serverless/**"
 
-name: Build and Deploy QA Example
+name: Build and Deploy Interview Exercise
 
 jobs:
   frontend:
@@ -180,7 +180,7 @@ jobs:
         working-directory: ${{ matrix.directory }}
 
       - name: Copy tarball to S3 codesets bucket
-        run: aws s3 cp serverless/build/${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} s3://${{ matrix.bucketName }}/
+        run: aws s3 cp qa-engineer/serverless/build/${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} s3://${{ matrix.bucketName }}/
 
       - name: Deploy Lambda
         run: aws lambda update-function-code --s3-bucket ${{ matrix.bucketName }} --s3-key ${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} --function-name ${{ matrix.functionName }}
