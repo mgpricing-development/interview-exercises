@@ -174,14 +174,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - run: zip -r ../build/${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} .
+      - run: zip -r ${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} .
         working-directory: ${{ matrix.directory }}
 
-      - name: Copy tarball to S3 codesets bucket
-        run: aws s3 cp qa-engineer/serverless/build/${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} s3://${{ matrix.bucketName }}/
-
       - name: Deploy Lambda
-        run: aws lambda update-function-code --zip-file ../build/${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} --function-name ${{ matrix.functionName }}
+        run: aws lambda update-function-code --zip-file fileb://${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} --function-name ${{ matrix.functionName }}
         working-directory: ${{ matrix.directory }}
 
       - name: Version Lambda
