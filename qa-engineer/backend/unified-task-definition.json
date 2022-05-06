@@ -66,6 +66,14 @@
         {
           "name": "MONGODB_URL",
           "valueFrom": "arn:aws:ssm:eu-west-1:AWS_ACCOUNT_ID:parameter/dev/todo/mongodbUrl"
+        },
+        {
+          "name": "BASIC_AUTH_USERNAME",
+          "valueFrom": "arn:aws:ssm:us-east-1:AWS_ACCOUNT_ID:parameter/interview-exercise/basicAuthUsername"
+        },
+        {
+          "name": "BASIC_AUTH_PASSWORD",
+          "valueFrom": "arn:aws:ssm:eu-west-1:AWS_ACCOUNT_ID:parameter/interview-exercise/basicAuthPassword"
         }
       ]
     }
