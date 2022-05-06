@@ -69,21 +69,6 @@ resource "aws_iam_role_policy_attachment" "lambda_role_attachment" {
   policy_arn = aws_iam_policy.lambda_policy.arn
 }
 
-resource "aws_security_group" "lambda_security_group" {
-  name        = "interview-exercise-lambda-sg"
-  description = "Security Group for Interview Exercise Lambda Functions"
-  vpc_id      = local.vpc_id
-
-  egress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = local.common_tags
-}
-
 resource "aws_cloudwatch_log_group" "lambda_log_groups" {
   name              = "/aws/lambda/interview-exercise-lambdaAtEdge"
   retention_in_days = 14
@@ -98,9 +83,4 @@ resource "aws_lambda_function" "lambda_functions" {
   timeout       = 5
   memory_size   = 1024
   handler       = "handler.handler"
-
-  vpc_config {
-    security_group_ids = [aws_security_group.lambda_security_group.id]
-    subnet_ids         = local.private_subnet_ids
-  }
 }
