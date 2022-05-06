@@ -69,11 +69,11 @@
         },
         {
           "name": "BASIC_AUTH_USERNAME",
-          "valueFrom": "arn:aws:ssm:us-east-1:AWS_ACCOUNT_ID:parameter/interview-exercise/basicAuthUsername"
+          "valueFrom": "arn:aws:ssm:us-east-1:AWS_ACCOUNT_ID:parameter/interviewExercise/basicAuthUsername"
         },
         {
           "name": "BASIC_AUTH_PASSWORD",
-          "valueFrom": "arn:aws:ssm:eu-west-1:AWS_ACCOUNT_ID:parameter/interview-exercise/basicAuthPassword"
+          "valueFrom": "arn:aws:ssm:eu-west-1:AWS_ACCOUNT_ID:parameter/interviewExercise/basicAuthPassword"
         }
       ]
     }
