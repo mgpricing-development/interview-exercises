@@ -2,10 +2,10 @@ import { bindActionCreators, compose } from "redux";
 import { connect } from "react-redux";
 import { selectTasks } from "./store/reducers";
 import Task from "./Task";
-import { useEffect } from "react";
 import { getTasks } from "./store/actions/tasks";
 import styled from "styled-components";
 import TaskForm from "./TaskForm";
+import { useEffect } from "react";
 
 const TaskList = ({ getTasks, tasks }) => {
   useEffect(() => {

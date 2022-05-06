@@ -8,6 +8,25 @@ servers:
   - url: "http://localhost:3001/"
   - url: "https://api.dev.cuvama.com/"
 paths:
+  /config:
+    get:
+      summary: Get config
+      operationId: getConfig
+      tags:
+        - tasks
+      responses:
+        "200":
+          description: List of Tasks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Config"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /tasks:
     get:
       summary: Get the list of tasks
@@ -80,6 +99,12 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    Config:
+      type: object
+      additionalProperties: false
+      properties:
+        basicAuthentication:
+          type: string
     CreateTask:
       type: object
       additionalProperties: false
