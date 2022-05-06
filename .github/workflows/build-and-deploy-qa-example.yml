@@ -1,6 +1,10 @@
 on:
   push:
     branches: [main, VDT-2327-1]
+    paths:
+      - "qa-engineer/frontend/**"
+      - "qa-engineer/backend/**"
+      - "qa-engineer/serverless/**"
 
 name: Build and Deploy QA Example
 
