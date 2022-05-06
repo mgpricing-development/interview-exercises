@@ -64,7 +64,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     }
 
     dynamic "lambda_function_association" {
-      for_each = var.basic_auth_username != "" ? [] : tolist([1])
+      for_each = var.lambda_at_edge_arn == "" ? [] : tolist([1])
 
       content {
         event_type = "viewer-request"

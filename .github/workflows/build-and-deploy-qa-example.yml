@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [main]
+    branches: [main, VDT-2327-1]
 
 name: Build and Deploy QA Example
 
