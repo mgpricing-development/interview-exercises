@@ -7,7 +7,7 @@ on:
       - "qa-engineer/serverless/**"
 
 name: Build and Deploy Interview Exercise
-
+concurrency: interview-example
 jobs:
   frontend:
     name: Build and Deploy Frontend
