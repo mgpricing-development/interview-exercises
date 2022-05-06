@@ -149,7 +149,7 @@ jobs:
           - function: lambdaAtEdge
             functionName: interview-exercise-lambdaAtEdge
             package: lambdaAtEdge.zip
-            bucketName: interview-exercise-lambda
+            bucketName: interview-exercise-cuvama-lambda
             directory: qa-engineer/serverless/lambda-at-edge
 
 
