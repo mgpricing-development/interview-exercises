@@ -14,6 +14,8 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
 
+app.use(validateRequestStructure);
+app.use("/healthcheck", healthCheckRoutes);
 
 if (process.env.BASIC_AUTH_USERNAME) {
     console.log("Basic Auth", process.env.BASIC_AUTH_USERNAME)
@@ -25,8 +27,6 @@ if (process.env.BASIC_AUTH_USERNAME) {
     }));
 }
 
-app.use(validateRequestStructure);
-app.use("/healthcheck", healthCheckRoutes);
 app.use("/tasks", tasksRoutes);
 app.use(errorHandler);
 
