@@ -42,7 +42,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Copy files to S3 codesets bucket
-        run: aws s3 sync qa-engineer/frontend/build s3://qa-example-website/
+        run: aws s3 sync qa-engineer/frontend/build s3://interview-example-website/
 
       - name: Invalidate Cloudfront distribution
         run: aws cloudfront create-invalidation --distribution-id E3GQ9JCM6SCDS4 --paths '/*'
@@ -56,9 +56,9 @@ jobs:
         container: [api]
         include:
           - container: api
-            ecrRepositoryName: qa-example
+            ecrRepositoryName: interview-example
             dockerFile: Dockerfile
-            containerName: qa-example
+            containerName: interview-example
             taskDefinitionFile: unified-task-definition.json
             awsAccountId: "077551424359"
 
@@ -130,5 +130,5 @@ jobs:
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ matrix.ecrRepositoryName }}
-          cluster: qa-example
+          cluster: interview-example
           wait-for-service-stability: true
