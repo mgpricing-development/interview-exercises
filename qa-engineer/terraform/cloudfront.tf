@@ -3,7 +3,7 @@ resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
 
 resource "aws_s3_bucket" "website_bucket" {
   acl = "private"
-  bucket = "qa-example-website"
+  bucket = "interview-exercise-website"
 
   tags = local.common_tags
 }
@@ -21,7 +21,7 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
             "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.origin_access_identity.id}"
         },
         "Action": "s3:GetObject",
-        "Resource": "arn:aws:s3:::qa-example-website/*"
+        "Resource": "arn:aws:s3:::interview-exercise-website/*"
     }
   ]
 }

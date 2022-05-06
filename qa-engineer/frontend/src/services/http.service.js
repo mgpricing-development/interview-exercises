@@ -9,7 +9,7 @@ function getBaseUrl() {
   if (matches) {
     switch (matches[1]) {
       default:
-        return "https://api-todo.dev.cuvama.com";
+        return "https://api-interview-exercise.dev.cuvama.com";
     }
   }
 
