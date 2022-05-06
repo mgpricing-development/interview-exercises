@@ -65,7 +65,7 @@
       "secrets": [
         {
           "name": "MONGODB_URL",
-          "valueFrom": "arn:aws:ssm:eu-west-1:AWS_ACCOUNT_ID:parameter/dev/todo/mongodbUrl"
+          "valueFrom": "arn:aws:ssm:eu-west-1:AWS_ACCOUNT_ID:parameter/interviewExercise/mongodbUrl"
         },
         {
           "name": "BASIC_AUTH_USERNAME",
