@@ -9,8 +9,11 @@ import { useEffect } from "react";
 
 const TaskList = ({ getTasks, tasks }) => {
   useEffect(() => {
-    getTasks();
-  }, [getTasks]);
+    setTimeout(() => {
+      getTasks();
+      console.log("getTasks");
+    }, 0);
+  }, []);
 
   return (
     <Container>

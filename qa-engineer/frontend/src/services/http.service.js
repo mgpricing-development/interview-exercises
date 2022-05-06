@@ -2,6 +2,7 @@ import axios from "axios";
 
 const baseURL = getBaseUrl();
 const http = axios.create({ baseURL: `${baseURL}/` });
+let basicAuthenticationValue = null;
 
 function getBaseUrl() {
   const matches = window.location.hostname.match(/^.*?([^.]+)\.cuvama\.com$/);
@@ -16,8 +17,15 @@ function getBaseUrl() {
   return process.env.REACT_APP_API;
 }
 
+const setBasicAuthentication = ({ basicAuthentication }) => {
+  console.log("setBasicAuthentication", basicAuthentication);
+  basicAuthenticationValue = basicAuthentication;
+};
+
 function getRequestHeaders() {
-  return {};
+  const headers = {};
+  headers["Authorization"] = `Basic ${basicAuthenticationValue}`;
+  return headers;
 }
 
 function get(url, headers = {}, params = {}) {
@@ -79,5 +87,6 @@ export default {
   patch,
   put,
   delete: doDelete,
-  uploadFile
+  uploadFile,
+  setBasicAuthentication
 };

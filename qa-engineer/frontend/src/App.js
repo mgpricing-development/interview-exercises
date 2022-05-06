@@ -3,29 +3,27 @@ import styled from "styled-components";
 import useLoadingState from "./utils/use-loading-state";
 import { message } from "antd";
 import LoadingState from "./utils/loading-state";
-import { selectConfigLoadingState } from "./store/reducers";
+import { selectConfig, selectConfigLoadingState } from "./store/reducers";
 import { bindActionCreators, compose } from "redux";
 import { getConfig } from "./store/actions/config";
 import { connect } from "react-redux";
 import { useEffect } from "react";
+import httpService from "./services/http.service";
 
-const App = ({ getConfig, configLoadingState }) => {
+const App = ({ getConfig, configLoadingState, config }) => {
   useEffect(() => {
-    if (configLoadingState === LoadingState.UNINITIALIZED) {
-      console.log("getConfig", getConfig);
-      getConfig();
-    }
-  }, [configLoadingState, getConfig]);
+    getConfig();
+  }, []);
 
   useLoadingState(
     configLoadingState,
-    () => {},
+    () => {
+      httpService.setBasicAuthentication(config);
+    },
     () => {
       message.error("Error loading config");
     }
   );
-
-  console.log("configLoadingState", configLoadingState);
 
   switch (configLoadingState) {
     case LoadingState.UNINITIALIZED:
@@ -50,7 +48,8 @@ const Container = styled.div`
 `;
 
 const mapStateToProps = (state) => ({
-  configLoadingState: selectConfigLoadingState(state)
+  configLoadingState: selectConfigLoadingState(state),
+  config: selectConfig(state)
 });
 
 const mapDispatchToProps = (dispatch) =>

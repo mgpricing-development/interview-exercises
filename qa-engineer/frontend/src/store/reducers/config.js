@@ -3,23 +3,23 @@ import LoadingState from "../../utils/loading-state";
 
 const INITIAL_STATE = {
   configLoadingState: LoadingState.UNINITIALIZED,
-  config: []
+  config: null
 };
 
 const configReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case types.GET_TASKS_REQUEST:
+    case types.CONFIG_REQUEST:
       return {
         ...state,
         configLoadingState: LoadingState.IN_PROGRESS
       };
-    case types.GET_TASKS_SUCCESS:
+    case types.CONFIG_SUCCESS:
       return {
         ...state,
         config: action.payload,
         configLoadingState: LoadingState.COMPLETED
       };
-    case types.GET_TASKS_FAILURE:
+    case types.CONFIG_FAILURE:
       return {
         ...state,
         configLoadingState: LoadingState.FAILED
