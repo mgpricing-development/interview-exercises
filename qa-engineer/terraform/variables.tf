@@ -8,21 +8,6 @@ variable "cidr_block" {
   default = ""
 }
 
-variable "public_subnet_cidr_blocks" {
-  type    = list(string)
-  default = []
-}
-
-variable "private_subnet_cidr_blocks" {
-  type    = list(string)
-  default = []
-}
-
-variable "availability_zones" {
-  type    = list(string)
-  default = []
-}
-
 variable "cloudfront_certificate_arn" {
   type = string
 }
@@ -36,16 +21,6 @@ variable "host_zone_id" {
 }
 
 variable "lambda_at_edge_arn" {
-  type    = string
-  default = ""
-}
-
-variable "basic_auth_username" {
-  type    = string
-  default = ""
-}
-
-variable "basic_auth_password" {
   type    = string
   default = ""
 }
