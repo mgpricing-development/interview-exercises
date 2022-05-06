@@ -5,6 +5,7 @@ on:
       - "qa-engineer/frontend/**"
       - "qa-engineer/backend/**"
       - "qa-engineer/serverless/**"
+      - ".github/**"
 
 name: Build and Deploy Interview Exercise
 concurrency: interview-example
@@ -173,9 +174,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - run: npm install
-        working-directory: ${{ matrix.directory }}
-
       - run: zip -r ../build/${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} .
         working-directory: ${{ matrix.directory }}
 
@@ -183,4 +181,8 @@ jobs:
         run: aws s3 cp qa-engineer/serverless/build/${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} s3://${{ matrix.bucketName }}/
 
       - name: Deploy Lambda
-        run: aws lambda update-function-code --s3-bucket ${{ matrix.bucketName }} --s3-key ${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} --function-name ${{ matrix.functionName }}
+        run: aws lambda update-function-code --zip-file ../build/${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} --function-name ${{ matrix.functionName }}
+        working-directory: ${{ matrix.directory }}
+
+      - name: Version Lambda
+        run: aws lambda publish-version --function-name ${{ matrix.functionName }}
