@@ -50,7 +50,7 @@ jobs:
         run: aws s3 sync qa-engineer/frontend/build s3://interview-exercise-website/
 
       - name: Invalidate Cloudfront distribution
-        run: aws cloudfront create-invalidation --distribution-id E1FEQMRXUDAD8A --paths '/*'
+        run: aws cloudfront create-invalidation --distribution-id E3FIZ3YBA3Z4Y2 --paths '/*'
 
   backend:
     name: Build and Deploy Backend
