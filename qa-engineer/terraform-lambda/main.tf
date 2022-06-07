@@ -6,7 +6,7 @@ terraform {
     organization = "Cuvama-DEV"
 
     workspaces {
-      prefix = "interview-exercise-"
+      prefix = "interview-exercise-lambda-"
     }
   }
 }
