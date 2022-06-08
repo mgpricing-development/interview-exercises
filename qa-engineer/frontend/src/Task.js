@@ -2,19 +2,11 @@ import styled from "styled-components";
 import { bindActionCreators, compose } from "redux";
 import { deleteTask } from "./store/actions/tasks";
 import { connect } from "react-redux";
-import { Button } from "antd";
 
-const Task = ({ task, deleteTask }) => {
-  const onDelete = () => {
-    deleteTask({ taskId: task._id });
-  };
-
+const Task = ({ task }) => {
   return (
     <Container data-cy={"task"}>
       <Name data-cy={"task-name"}>{task.name}</Name>
-      <Action>
-        <Button onClick={onDelete}>Delete</Button>
-      </Action>
     </Container>
   );
 };
@@ -32,8 +24,6 @@ const Name = styled.div`
   flex: 1;
   text-align: left;
 `;
-
-const Action = styled.div``;
 
 const mapStateToProps = () => ({});
 

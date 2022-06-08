@@ -21,7 +21,7 @@ const TaskForm = ({ createTask }) => {
         autoComplete="off"
       >
         <Form.Item name="name">
-          <Input placeholder={"Task nane"} />
+          <Input placeholder={"Task name"} />
         </Form.Item>
 
         <Form.Item>
