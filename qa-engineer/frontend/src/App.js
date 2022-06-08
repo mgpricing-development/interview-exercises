@@ -34,8 +34,6 @@ const App = ({ getConfig, configLoadingState, config }) => {
     default:
       return (
         <Container>
-          This is a simple task list. You can create and delete tasks from the
-          list bellow. Task names shoud be unique.
           <TaskList />
         </Container>
       );

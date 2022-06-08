@@ -58,10 +58,10 @@ export const getTasks = () => (dispatch) => {
 
   tasksService
     .getTasks()
-    .then((data) => {
+    .then((payload) => {
       dispatch({
         type: types.GET_TASKS_SUCCESS,
-        payload: data
+        payload
       });
     })
     .catch((error) => {

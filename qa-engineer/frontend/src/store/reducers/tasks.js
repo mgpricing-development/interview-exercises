@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   getTasksLoadingState: LoadingState.UNINITIALIZED,
   createTaskLoadingState: LoadingState.UNINITIALIZED,
   deleteTaskLoadingState: LoadingState.UNINITIALIZED,
+  createTaskError: null,
   tasks: []
 };
 
@@ -30,7 +31,8 @@ const tasksReducer = (state = INITIAL_STATE, action) => {
     case types.CREATE_TASK_REQUEST:
       return {
         ...state,
-        createTaskLoadingState: LoadingState.IN_PROGRESS
+        createTaskLoadingState: LoadingState.IN_PROGRESS,
+        createTaskError: null
       };
     case types.CREATE_TASK_SUCCESS:
       return {
@@ -41,7 +43,8 @@ const tasksReducer = (state = INITIAL_STATE, action) => {
     case types.CREATE_TASK_FAILURE:
       return {
         ...state,
-        createTaskLoadingState: LoadingState.FAILED
+        createTaskLoadingState: LoadingState.FAILED,
+        createTaskError: action.error
       };
 
     case types.DELETE_TASK_REQUEST:
@@ -67,5 +70,8 @@ const tasksReducer = (state = INITIAL_STATE, action) => {
 };
 
 export const selectTasks = (tasksData) => tasksData.tasks;
+export const selectCreateTaskLoadingState = (tasksData) =>
+  tasksData.createTaskLoadingState;
+export const selectCreateTaskError = (tasksData) => tasksData.createTaskError;
 
 export default tasksReducer;
