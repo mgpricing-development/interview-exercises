@@ -3,9 +3,9 @@ variable "region" {
   default = "eu-west-1"
 }
 
-variable "cidr_block" {
+variable "environment_name" {
   type    = string
-  default = ""
+  default = "dev"
 }
 
 variable "cloudfront_certificate_arn" {
@@ -30,23 +30,9 @@ variable "docker_port_number" {
   default = 3000
 }
 
-variable "vpc_id" {
-  type = string
-}
-
-variable "public_subnet_ids" {
-  type    = list(string)
-  default = []
-}
-
-variable "private_subnet_ids" {
-  type    = list(string)
-  default = []
-}
-
 variable "desired_count" {
   type    = number
-  default = 0
+  default = 1
 }
 
 data "aws_caller_identity" "current" {}
