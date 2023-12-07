@@ -51,7 +51,11 @@ jobs:
         run: aws s3 sync qa-engineer/frontend/build s3://interview-exercise-website/
 
       - name: Invalidate Cloudfront distribution
-        run: aws cloudfront create-invalidation --distribution-id E3FIZ3YBA3Z4Y2 --paths '/*'
+        id: cloudfront
+        run: echo "invalidation_id=$(aws cloudfront create-invalidation --distribution-id E1864A0434HJIK --paths '/*' | jq -r .Invalidation.Id)" >> $GITHUB_OUTPUT
+
+      - name: Wait for invalidation
+        run: aws cloudfront wait invalidation-completed --distribution-id E1864A0434HJIK --id "${{ steps.cloudfront.outputs.invalidation_id }}"
 
   backend:
     name: Build and Deploy Backend
@@ -181,4 +185,10 @@ jobs:
       - name: Deploy Lambda
         run: aws lambda update-function-code --zip-file fileb://${{ steps.vars.outputs.short_sha }}-${{ matrix.package }} --function-name ${{ matrix.functionName }}
         working-directory: ${{ matrix.directory }}
+
+      - name: Wait for Update
+        run: aws lambda wait function-updated --function-name ${{ matrix.functionName }}
+
+      - name: Publish Version
+        run: aws lambda publish-version --function-name ${{ matrix.functionName }}
 
