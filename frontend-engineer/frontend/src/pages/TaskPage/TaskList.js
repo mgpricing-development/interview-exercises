@@ -5,7 +5,6 @@ import {
   selectCreateTaskLoadingState,
   selectTasks
 } from "../../store/reducers";
-import Task from "./Task";
 import { getTasks } from "../../store/actions/tasks";
 import styled from "styled-components";
 import TaskForm from "./TaskForm";
@@ -42,9 +41,11 @@ const TaskList = ({
     <Container>
       <h1 data-cy={"task-list-header"}>Task List ({tasks.length} items)</h1>
       <TaskForm />
-      {tasks.map((task, index) => (
-        <Task task={task} key={index} />
-      ))}
+      <ul>
+        {tasks.map((task, index) => (
+          <li key={index}>{task.name}</li>
+        ))}
+      </ul>
     </Container>
   );
 };
