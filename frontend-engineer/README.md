@@ -18,7 +18,17 @@ Initially it should look like this:
 
 ## Exercise 1: Layout and Styling
 
-We are going to add some styling to the Task List:
+We are going to add some styling to the app.
+
+### Task Cards
+
+We want to change the task list for a simple unordered list to cards for each task:
+
+* On hover, the card should have a 1px solid black border
+* The background of the card should be white
+* The card should have rounded corners: 6px radius
+* The card should have 5px padding on all sides
+* The text should be aligned against the left side of the card
 
 ### Task List
 
@@ -35,16 +45,11 @@ The card should have a header area that contains the title "Task List (n items)"
 * The Task List title should be aligned to the left side
 * The Form should be aligned to the right side
 * The baseline of the Task List title should be aligned with the bottom of the form
+* 20px between the bottom of this header and the start of the task list
 
-### Task Cards
+After all this the list should look something like this:
 
-We want to change the task list for a simple unordered list to 
-
-* On hover, the card should have a 1px solid black border
-* The background of the card should be white
-* The card should have rounded corners: 6px radius
-* The card should have 5px padding on all sides
-* The text should be aligned against the left side of the card
+![Styled app](./images/styled-list.png)
 
 ## Exercise 2: The users can delete a task from the list
 
