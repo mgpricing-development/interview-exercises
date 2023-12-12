@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import { bindActionCreators, compose } from "redux";
 import { createTask } from "../../store/actions/tasks";
 import { connect } from "react-redux";
@@ -12,7 +11,7 @@ const TaskForm = ({ createTask }) => {
   };
 
   return (
-    <Container>
+    <div>
       <Form
         name="basic"
         form={form}
@@ -30,15 +29,9 @@ const TaskForm = ({ createTask }) => {
           </Button>
         </Form.Item>
       </Form>
-    </Container>
+    </div>
   );
 };
-
-const Container = styled.div`
-  margin: 5px;
-  display: flex;
-  flex-direction: row;
-`;
 
 const mapStateToProps = () => ({});
 

@@ -6,7 +6,6 @@ import {
   selectTasks
 } from "../../store/reducers";
 import { getTasks } from "../../store/actions/tasks";
-import styled from "styled-components";
 import TaskForm from "./TaskForm";
 import { useEffect } from "react";
 import { message } from "antd";
@@ -38,7 +37,7 @@ const TaskList = ({
   );
 
   return (
-    <Container>
+    <div>
       <h1 data-cy={"task-list-header"}>Task List ({tasks.length} items)</h1>
       <TaskForm />
       <ul>
@@ -46,15 +45,9 @@ const TaskList = ({
           <li key={index}>{task.name}</li>
         ))}
       </ul>
-    </Container>
+    </div>
   );
 };
-
-const Container = styled.div`
-  padding: 20px;
-  margin: auto;
-  width: 50%;
-`;
 
 const mapStateToProps = (state) => ({
   tasks: selectTasks(state),
