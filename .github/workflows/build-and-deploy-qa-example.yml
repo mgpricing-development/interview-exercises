@@ -52,10 +52,10 @@ jobs:
 
       - name: Invalidate Cloudfront distribution
         id: cloudfront
-        run: echo "invalidation_id=$(aws cloudfront create-invalidation --distribution-id E1864A0434HJIK --paths '/*' | jq -r .Invalidation.Id)" >> $GITHUB_OUTPUT
+        run: echo "invalidation_id=$(aws cloudfront create-invalidation --distribution-id E296E4CVKWZW3W --paths '/*' | jq -r .Invalidation.Id)" >> $GITHUB_OUTPUT
 
       - name: Wait for invalidation
-        run: aws cloudfront wait invalidation-completed --distribution-id E1864A0434HJIK --id "${{ steps.cloudfront.outputs.invalidation_id }}"
+        run: aws cloudfront wait invalidation-completed --distribution-id E296E4CVKWZW3W --id "${{ steps.cloudfront.outputs.invalidation_id }}"
 
   backend:
     name: Build and Deploy Backend
