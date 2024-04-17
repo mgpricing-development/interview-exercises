@@ -1,6 +1,0 @@
-{
-  "testFiles": "**/*.spec.js",
-  "viewportWidth": 1600,
-  "defaultCommandTimeout": 8000,
-  "videoCompression": false
-}
