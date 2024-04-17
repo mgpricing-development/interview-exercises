@@ -1,0 +1,17 @@
+{
+  "name": "automated-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cypress:open": "cypress open"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cypress": "^13.7.3"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  }
+}
