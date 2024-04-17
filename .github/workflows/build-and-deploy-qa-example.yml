@@ -1,7 +1,7 @@
 on:
   workflow_dispatch:
   push:
-    branches: [main, VDT-2327-1]
+    branches: [main, qa-engineer-update-apr-2024]
     paths:
       - "qa-engineer/frontend/**"
       - "qa-engineer/backend/**"
