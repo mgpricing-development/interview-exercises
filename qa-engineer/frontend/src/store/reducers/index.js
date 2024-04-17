@@ -1,11 +1,9 @@
 import { combineReducers } from "redux";
-import { connectRouter } from "connected-react-router";
 import tasksData, * as fromTasks from "./tasks";
 import configData, * as fromConfig from "./config";
 
-const reducers = (history) =>
+const reducers = () =>
   combineReducers({
-    router: connectRouter(history),
     tasksData,
     configData
   });
