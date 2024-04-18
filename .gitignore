@@ -1,3 +1,4 @@
 .idea
 .terraform
 .terraform.lock.hcl
+/qa-engineer/automated-testing/node_modules/

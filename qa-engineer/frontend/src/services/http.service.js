@@ -1,4 +1,7 @@
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+import CookieNames from "../utils/cookie-names";
+import Cookies from "js-cookie";
 
 const baseURL = getBaseUrl();
 const http = axios.create({ baseURL: `${baseURL}/` });
@@ -25,7 +28,18 @@ const setBasicAuthentication = ({ basicAuthentication }) => {
 function getRequestHeaders() {
   const headers = {};
   headers["Authorization"] = `Basic ${basicAuthenticationValue}`;
+  headers["X-Request-Id"] = uuidv4();
+  headers["X-Guest-Id"] = getGuestId();
+
   return headers;
+}
+
+let guestId = null;
+function getGuestId() {
+  if (!guestId) {
+    guestId = Cookies.get(`cuvama_${CookieNames.GUEST_ID}`);
+  }
+  return guestId;
 }
 
 function get(url, headers = {}, params = {}) {

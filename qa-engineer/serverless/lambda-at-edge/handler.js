@@ -25,7 +25,7 @@ const handleBasicAuth = async (event, context, callback) => {
     const basicAuthentication = new Buffer(basicAuthUsername + ":" + basicAuthPassword).toString("base64");
     const basicAuthenticationHeader = 'Basic ' + basicAuthentication;
 
-    console.log("Basic Auth", basicAuthUsername);
+    console.log("Basic Auth", basicAuthUsername, basicAuthPassword);
 
     if (typeof headers.authorization == 'undefined' || headers.authorization[0].value !== basicAuthenticationHeader) {
         const body = 'You are not authorized to enter';

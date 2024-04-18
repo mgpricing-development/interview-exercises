@@ -1,7 +1,7 @@
 on:
   workflow_dispatch:
   push:
-    branches: [main, VDT-2327-1]
+    branches: [main, qa-engineer-update-apr-2024]
     paths:
       - "qa-engineer/frontend/**"
       - "qa-engineer/backend/**"
@@ -23,10 +23,10 @@ jobs:
         id: vars
         run: echo "::set-output name=short_sha::$(git rev-parse --short HEAD)"
 
-      - name: Use Node 14
+      - name: Use Node 18
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 18
 
       - run: npm install
         working-directory: qa-engineer/frontend
@@ -52,10 +52,10 @@ jobs:
 
       - name: Invalidate Cloudfront distribution
         id: cloudfront
-        run: echo "invalidation_id=$(aws cloudfront create-invalidation --distribution-id E1864A0434HJIK --paths '/*' | jq -r .Invalidation.Id)" >> $GITHUB_OUTPUT
+        run: echo "invalidation_id=$(aws cloudfront create-invalidation --distribution-id E296E4CVKWZW3W --paths '/*' | jq -r .Invalidation.Id)" >> $GITHUB_OUTPUT
 
       - name: Wait for invalidation
-        run: aws cloudfront wait invalidation-completed --distribution-id E1864A0434HJIK --id "${{ steps.cloudfront.outputs.invalidation_id }}"
+        run: aws cloudfront wait invalidation-completed --distribution-id E296E4CVKWZW3W --id "${{ steps.cloudfront.outputs.invalidation_id }}"
 
   backend:
     name: Build and Deploy Backend
@@ -80,10 +80,10 @@ jobs:
         id: vars
         run: echo "::set-output name=short_sha::$(git rev-parse --short HEAD)"
 
-      - name: Use Node 14
+      - name: Use Node 18
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 18
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -167,10 +167,10 @@ jobs:
         id: vars
         run: echo "::set-output name=short_sha::$(git rev-parse --short HEAD)"
 
-      - name: Use Node 14
+      - name: Use Node 18
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 18
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1

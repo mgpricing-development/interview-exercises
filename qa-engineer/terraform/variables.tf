@@ -20,7 +20,7 @@ variable "host_zone_id" {
   type = string
 }
 
-variable "lambda_at_edge_arn" {
+  variable "lambda_at_edge_arn" {
   type    = string
   default = ""
 }
