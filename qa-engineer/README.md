@@ -1,11 +1,11 @@
 # QA Engineer Interview Exercises
 
-## Exercise #1
+## Exercise #1: Test Plan
 
 Write a test plan for the user story below. You can write the plan in any format you want: ie. text, Word doc, spreadsheet, etc.
 Please share your screen as you work.
 
-## Exercise #2
+## Exercise #2: Cypress Test
 
 Write a Cypress test that executes part of the test plan. You can use your own Cypress install. If you want, 
 you can use the starter project is available in the [automated-testing](./automated-testing) directory. Again, 
