@@ -1,5 +1,11 @@
 # QA Engineer Interview Exercises
 
+## Exercises
+
+- **Exercise one:** Write up a test plan for the user story below
+- **Exercise two:** Write a Cypress test that executes part of the test plan
+
+
 ## Glossary
 
 - **discovery**: This is a document created in Cuvama by a logged-in Cuvama user. This user that created the discovery 
