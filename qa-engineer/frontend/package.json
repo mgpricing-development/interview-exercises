@@ -8,7 +8,10 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.12.1",
     "axios": "^1.6.2",
+    "email-validator": "^2.0.4",
     "history": "^5.3.0",
+    "js-cookie": "^3.0.5",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.0.2",
@@ -19,6 +22,7 @@
     "redux-thunk": "^3.1.0",
     "styled-components": "^5.3.5",
     "url": "^0.11.0",
+    "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

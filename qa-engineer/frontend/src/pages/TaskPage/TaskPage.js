@@ -1,7 +1,8 @@
 import TaskList from "./TaskList";
+import { Page } from "../../components/layout";
 
 const TaskPage = () => {
-  return <TaskList />;
+  return <Page><TaskList /></Page>;
 };
 
 export default TaskPage;

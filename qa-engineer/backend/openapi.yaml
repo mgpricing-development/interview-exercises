@@ -14,6 +14,8 @@ paths:
       operationId: getConfig
       tags:
         - tasks
+      parameters:
+        - $ref: '#/components/parameters/X-Request-Id'
       responses:
         "200":
           description: List of Tasks
@@ -33,6 +35,8 @@ paths:
       operationId: getTasks
       tags:
         - tasks
+      parameters:
+        - $ref: '#/components/parameters/X-Request-Id'
       responses:
         "200":
           description: List of Tasks
@@ -51,6 +55,8 @@ paths:
       operationId: createTask
       tags:
         - tasks
+      parameters:
+        - $ref: '#/components/parameters/X-Request-Id'
       requestBody:
         required: true
         content:
@@ -77,6 +83,7 @@ paths:
       tags:
         - tasks
       parameters:
+        - $ref: '#/components/parameters/X-Request-Id'
         - name: taskId
           in: path
           required: true
@@ -86,6 +93,56 @@ paths:
       responses:
         "204":
           description: Deleted successfully
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /guests:
+    post:
+      summary: Register a new guest
+      operationId: registerGuest
+      tags:
+        - guests
+      parameters:
+        - $ref: '#/components/parameters/X-Request-Id'
+        - $ref: '#/components/parameters/X-Guest-Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterGuest"
+      responses:
+        "200":
+          description: Created task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guest"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /guests/me:
+    get:
+      summary: Get my guest status
+      operationId: getGuest
+      tags:
+        - guests
+      parameters:
+        - $ref: '#/components/parameters/X-Request-Id'
+        - $ref: '#/components/parameters/X-Guest-Id'
+      responses:
+        "200":
+          description: Created task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guest"
         default:
           description: unexpected error
           content:
@@ -121,6 +178,30 @@ components:
           type: array
           items:
             type: object
+    Guest:
+      type: object
+      additionalProperties: false
+      required:
+        - guestId
+        - email
+      properties:
+        guestId:
+          type: string
+        email:
+          type: string
+          example: foo@bar.com
+    RegisterGuest:
+      type: object
+      additionalProperties: false
+      required:
+        - email
+        - reportId
+      properties:
+        email:
+          type: string
+          example: foo@bar.com
+        reportId:
+          type: string
     Task:
       type: object
       additionalProperties: false
@@ -135,3 +216,21 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Task"
+  parameters:
+    X-Guest-Id:
+      name: X-Guest-Id
+      in: header
+      required: true
+      description: A UUID to uniquely identify an anonymous visitor to the web reports
+      schema:
+        type: string
+        example: guest-d49c1457-183d-4d8a-b193-96f968caa021
+    X-Request-Id:
+      name: X-Request-Id
+      in: header
+      required: true
+      description: A UUID to uniquely identify the web request for tracing and debugging purposes
+      schema:
+        type: string
+        format: uuid
+        example: d49c1457-183d-4d8a-b193-96f968caa021

@@ -6,12 +6,14 @@ import { Provider } from "react-redux";
 import store from "./store/store";
 import Routes from "./routes";
 import { BrowserRouter, Route } from "react-router-dom";
+import GuestUserTracker from "./components/GuestUserTracker";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
+        <GuestUserTracker />
         <Route component={Routes} />
       </BrowserRouter>
     </Provider>
