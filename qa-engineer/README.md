@@ -1,10 +1,12 @@
 # QA Engineer Interview Exercises
 
-## Exercises
+## Exercise #1
 
-- **Exercise one:** Write up a test plan for the user story below
-- **Exercise two:** Write a Cypress test that executes part of the test plan
+Write a test plan for the user story below 
 
+## Exercise #2
+
+Write a Cypress test that executes part of the test plan
 
 ## Glossary
 
